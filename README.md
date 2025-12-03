@@ -182,7 +182,7 @@ Ajuste:
 
 
 
-baseURL: "https://localhost:32769" Obs: Tem que ser a que está sendo apresentada quando você executa sua aplicação local
+API_BASE_URL: "https://localhost:32769" Obs: Tem que ser a que está sendo apresentada quando você executa sua aplicação local
 
 
 
@@ -208,11 +208,10 @@ CORS liberado para o Vue durante o desenvolvimento
 
 O armazenamento está InMemory, mas a estrutura de dados está criada caso queria executar usando conexão com sqlserver.  
 
-### ✔ Para habilitar SQL Server
+
+* Para habilitar SQL Server
 
 
-
-* Endpoints principais
 
 Basta **descomentar** este trecho no `Program.cs`:
 
@@ -228,6 +227,8 @@ e comentar o trecho
 builder.Services.AddDbContext<HeroContext>(options =>
     options.UseInMemoryDatabase("HeroDb"));
 
+
+* Endpoints principais
 
 Heróis
 
