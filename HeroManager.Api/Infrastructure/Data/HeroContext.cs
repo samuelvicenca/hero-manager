@@ -17,7 +17,7 @@ namespace HeroManager.Api.Infrastructure.Data
 
             modelBuilder.Entity<Hero>(static builder =>
             {
-               // builder.ToTable("Herois");
+               builder.ToTable("Herois");
                 builder.HasKey(h => h.Id);
                 builder.Property(h => h.Nome).HasMaxLength(120).IsRequired();
                 builder.Property(h => h.NomeHeroi).HasMaxLength(120).IsRequired();
@@ -29,7 +29,7 @@ namespace HeroManager.Api.Infrastructure.Data
 
             modelBuilder.Entity<Superpower>(builder =>
             {
-                //builder.ToTable("Superpoderes");
+                builder.ToTable("Superpoderes");
                 builder.HasKey(s => s.Id);
                 builder.Property(s => s.Superpoder).HasMaxLength(50).IsRequired();
                 builder.Property(s => s.Descricao).HasMaxLength(250).IsRequired();
@@ -37,7 +37,7 @@ namespace HeroManager.Api.Infrastructure.Data
 
             modelBuilder.Entity<HeroSuperpower>(builder =>
             {
-               // builder.ToTable("HeroisSuperpoderes");
+               builder.ToTable("HeroisSuperpoderes");
                 builder.HasKey(hs => new { hs.HeroiId, hs.SuperpoderId });
 
                 builder.HasOne(hs => hs.Heroi)

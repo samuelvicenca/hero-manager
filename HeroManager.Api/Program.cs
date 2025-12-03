@@ -16,6 +16,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HeroContext>(options =>
     options.UseInMemoryDatabase("HeroDb"));
 
+//var connectionString = builder.Configuration.GetConnectionString("HeroDb");
+
+//builder.Services.AddDbContext<HeroContext>(options =>
+//    options.UseSqlServer(connectionString));
+
+
 builder.Services.AddScoped<IHeroRepository, HeroRepository>();
 builder.Services.AddScoped<ISuperpowerRepository, SuperpowerRepository>();
 builder.Services.AddScoped<IHeroService, HeroService>();
