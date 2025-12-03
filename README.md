@@ -208,12 +208,25 @@ CORS liberado para o Vue durante o desenvolvimento
 
 O armazenamento está InMemory, mas a estrutura de dados está criada caso queria executar usando conexão com sqlserver.  
 
-
+### ✔ Para habilitar SQL Server
 
 
 
 * Endpoints principais
 
+Basta **descomentar** este trecho no `Program.cs`:
+
+```csharp
+// var connectionString = builder.Configuration.GetConnectionString("HeroDb");
+
+// builder.Services.AddDbContext<HeroContext>(options =>
+//     options.UseSqlServer(connectionString));
+
+
+e comentar o trecho 
+
+builder.Services.AddDbContext<HeroContext>(options =>
+    options.UseInMemoryDatabase("HeroDb"));
 
 
 Heróis
@@ -326,6 +339,23 @@ Formulário simples e direto para auxiliar no cadastro dos heróis
 
 Listagem com ações
 
+
+* Testes de Unidade
+
+O projeto inclui um conjunto de testes de unidade desenvolvidos com xUnit e Moq, focados principalmente na camada de serviços (HeroService).
+Esses testes validam regras de negócio essenciais, como:
+
+Validação de nomes duplicados
+
+Associação de superpoderes
+
+Atualização correta dos relacionamentos
+
+Exclusão de heróis
+
+Tratamento de erros e exceções esperadas
+
+Os testes garantem que o comportamento do domínio permaneça consistente e ajudam a validar a aplicação sem depender do banco de dados real, utilizando mocks dos repositórios.
 
 
 
