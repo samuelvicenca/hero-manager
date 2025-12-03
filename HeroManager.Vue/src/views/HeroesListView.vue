@@ -29,54 +29,69 @@
       </section>
 
       <section v-else>
-        <table v-if="heroes.length" class="heroes-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Nome de Herói</th>
-              <th>Altura</th>
-              <th>Peso</th>
-              <th>Data Nasc.</th>
-              <th>Superpoderes</th>
-              <th class="heroes-table__th-actions">Ações</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            <tr v-for="hero in heroes" :key="hero.id">
-              <td>#{{ hero.id }}</td>
-              <td>{{ hero.nome }}</td>
+        <div v-if="heroes.length">
+          <!-- Filtro por ID -->
+          <div class="heroes-filter">
+            <label class="heroes-filter__label" for="searchId">Buscar por ID</label>
+            <input
+              id="searchId"
+              v-model="searchId"
+              type="text"
+              class="heroes-filter__input"
+              placeholder="Ex: 1 ou #1"
+            />
+          </div>
 
-              <td class="heroes-table__hero-name">
-                <span class="badge badge--hero">{{ hero.nomeHeroi }}</span>
-              </td>
+          <table class="heroes-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Nome de Herói</th>
+                <th>Altura</th>
+                <th>Peso</th>
+                <th>Data Nasc.</th>
+                <th>Superpoderes</th>
+                <th class="heroes-table__th-actions">Ações</th>
+              </tr>
+            </thead>
 
-              <td>{{ hero.altura.toFixed(2) }} m</td>
-              <td>{{ hero.peso.toFixed(1) }} kg</td>
-              <td>{{ formatDate(hero.dataNascimento) }}</td>
+            <tbody>
+              <tr v-for="hero in filteredHeroes" :key="hero.id">
+                <td>#{{ hero.id }}</td>
+                <td>{{ hero.nome }}</td>
 
-              <td>
-                <span
-                  v-for="sp in hero.superpoderes"
-                  :key="sp.id"
-                  style="margin-right: 6px;"
-                >
-                  {{ sp.superpoder }}
-                </span>
-              </td>
+                <td class="heroes-table__hero-name">
+                  <span class="badge badge--hero">{{ hero.nomeHeroi }}</span>
+                </td>
 
-              <td class="heroes-table__actions">
-                <button type="button" class="btn btn--ghost" @click="editHero(hero.id)">
-                  Editar
-                </button>
-                <button type="button" class="btn btn--danger" @click="removeHero(hero.id)">
-                  Excluir
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <td>{{ hero.altura.toFixed(2) }} m</td>
+                <td>{{ hero.peso.toFixed(1) }} kg</td>
+                <td>{{ formatDate(hero.dataNascimento) }}</td>
+
+                <td>
+                  <span
+                    v-for="sp in hero.superpoderes"
+                    :key="sp.id"
+                    style="margin-right: 6px;"
+                  >
+                    {{ sp.superpoder }}
+                  </span>
+                </td>
+
+                <td class="heroes-table__actions">
+                  <button type="button" class="btn btn--ghost" @click="editHero(hero.id)">
+                    Editar
+                  </button>
+                  <button type="button" class="btn btn--danger" @click="removeHero(hero.id)">
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div v-else class="empty-state">
           <h2 class="empty-state__title">Nenhum herói cadastrado ainda</h2>
@@ -93,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import type { Hero } from '../types/hero';
 import { getHeroes, deleteHero } from '../api/heroes';
@@ -103,6 +118,28 @@ const router = useRouter();
 const heroes = ref<Hero[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
+
+
+const searchId = ref('');
+
+
+const filteredHeroes = computed(() => {
+  const raw = searchId.value.trim();
+
+  if (!raw) {
+    return heroes.value;
+  }
+
+
+  const normalized = raw.replace('#', '');
+  const id = Number(normalized);
+
+  if (Number.isNaN(id)) {
+    return heroes.value;
+  }
+
+  return heroes.value.filter((h) => h.id === id);
+});
 
 function formatDate(value: string): string {
   if (!value) return '';
@@ -117,7 +154,7 @@ async function loadHeroes() {
     heroes.value = await getHeroes();
   } catch (err) {
     console.error(err);
-    error.value = 'Erro ao carregar heróis.';
+    error.value = 'Erro ao carregar heróis. Verifique se a URL da API que você está executando localmente é a mesma configurada no arquivo http.ts. Caso o valor esteja diferente, atualize a constante API_BASE_URL para a URL correta que sua API está usando. Além disso, certifique-se de que o projeto HeroManager.Api está realmente em execução localmente e confirme se a URL/porta exibida no console corresponde ao endereço configurado no frontend.';
   } finally {
     loading.value = false;
   }
@@ -209,6 +246,33 @@ onMounted(loadHeroes);
   color: #b91c1c;
 }
 
+
+.heroes-filter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.heroes-filter__label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.heroes-filter__input {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+}
+
+.heroes-filter__input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
 /* Tabela */
 
 .heroes-table {
@@ -261,7 +325,7 @@ onMounted(loadHeroes);
   color: #1d4ed8;
 }
 
-/* Estado vazio */
+
 
 .empty-state {
   padding: 32px 16px 16px;
@@ -280,7 +344,7 @@ onMounted(loadHeroes);
   color: #6b7280;
 }
 
-/* Botões */
+
 
 .btn {
   border-radius: 999px;
