@@ -1,0 +1,31 @@
+@import './base.css';
+
+/* Reset/global leve */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #111827;
+  background-color: #f3f4f6;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* Links genéricos */
+a {
+  color: inherit;
+  text-decoration: none;
+}
